@@ -2,7 +2,7 @@ require('./config/config'); // va ejecutar todo el codigo de ese file
 const express = require('express');
 const app = express();
 const bodyParser = require('body-parser');
-
+const mongoose = require('mongoose');
 /**
  * cuando en la aplicacion se vea un .use() significa que estamos 
  * llamando un middleware que funciona para ejecutarse siempre que
@@ -11,46 +11,20 @@ const bodyParser = require('body-parser');
 
 // parse application/x-www-form-urlencoded
 app.use(bodyParser.urlencoded({ extended: false }));
-
+// con estos metodos preparo el proyecto a recivir JSON
 // parse application/json
 app.use(bodyParser.json());
 
-app.get('/usuario', function(req, res) {
+app.use(require('../cruds/cruds')); // con esta linea indico que voy a usar las
+// peticiones que cruds/cruds
 
-    res.json('get usuario')
-});
+mongoose.connect(process.env.URLDB, { useNewUrlParser: true, useCreateIndex: true },
+    (err, res) => {
+        // se llama para saber si se pudo hacer la coneccion
+        if (err) throw err;
+        console.log('data base online');
+    });
 
-app.post('/usuario', function(req, res) {
-    // cuando mandamos información por post se le llama payload
-    let body = req.body; // este body va a aparecer cuando el body-parser
-    // note un payload
-    if (body.nombre === undefined) {
-        res.status(400).json({
-            ok: false,
-            mensaje: 'falta el nombre del usuario'
-        });
-    } else {
-        res.json({
-            persona: body
-        });
-    }
-
-
-
-});
-
-app.put('/usuario/:id', function(req, res) {
-
-    let id = req.params.id; // aqui tomo la variable que se esta mandando
-
-    res.json({ // aqui indico que uiero que retorne cualquier cosa que mande el usuario
-        id
-    })
-});
-app.delete('/usuario', function(req, res) {
-
-    res.json('delete usuario')
-});
 
 app.listen(process.env.PORT, () => {
     console.log('escuchando puerto:', 3000);
