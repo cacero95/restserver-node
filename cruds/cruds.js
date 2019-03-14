@@ -64,7 +64,7 @@ app.get('/usuario', verifica_token, (req, res) => {
         })
 });
 
-app.post('/usuario', verifica_token, (req, res) => {
+app.post('/usuario', (req, res) => {
     // cuando mandamos información por post se le llama payload
     let body = req.body; // este body va a aparecer cuando el body-parser
     // note un payload
