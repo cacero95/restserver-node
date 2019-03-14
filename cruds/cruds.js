@@ -7,10 +7,24 @@ const _ = require('underscore');
  * con esta libreria expandimos las funciones que se pueden hacer con js
  */
 const Usuario = require('../models/usuario');
+const { verifica_token } = require('../middlewares/autenticacion');
 
+//               para madar varios middlewares
+//               [verificar_token, 'nombre_segundo middle',etc.]
+//                              ^
+//                              |
+app.get('/usuario', verifica_token, (req, res) => {
+    /**
+     * app.get(ruta, middleware, callback)
+     */
+    //return res.json({
 
+    //    usuario: req.usuario,
+    //    nombre: req.nombre,
+    //    email: req.usuario.email
+    //
+    //})
 
-app.get('/usuario', (req, res) => {
     let limite = req.query.limite || 5;
     limite = Number(limite);
     let desde = req.query.desde || 0; // con req.query tomo los params que manda el usuario
@@ -50,7 +64,7 @@ app.get('/usuario', (req, res) => {
         })
 });
 
-app.post('/usuario', (req, res) => {
+app.post('/usuario', verifica_token, (req, res) => {
     // cuando mandamos información por post se le llama payload
     let body = req.body; // este body va a aparecer cuando el body-parser
     // note un payload
@@ -85,7 +99,14 @@ app.post('/usuario', (req, res) => {
 
 });
 
-app.put('/usuario/:id', function(req, res) {
+app.put('/usuario/:id', verifica_token, function(req, res) {
+
+    if (req.usuario.role != 'ADMIN_ROLE') {
+        return res.status(401).json({
+            ok: false,
+            mensaje: 'No tienes permisos de actualizar datos'
+        })
+    }
 
     let id = req.params.id; // aqui tomo la variable que se esta mandando
 
@@ -94,6 +115,7 @@ app.put('/usuario/:id', function(req, res) {
      * _.pick() es increible pero estoy usando el require underscore
      * y me funciona para indicarle que campos de la dba quiero usar
      */
+
 
     Usuario.findByIdAndUpdate(id, body, { new: true, runValidators: true }, (err, usuarioDB) => {
         /**
@@ -115,7 +137,18 @@ app.put('/usuario/:id', function(req, res) {
 
 
 });
-app.delete('/usuario/:id', (req, res) => {
+//                      para madar varios middlewares
+//                      [verificar_token, 'nombre_segundo middle',etc.]
+//                              ^
+//                              |
+app.delete('/usuario/:id', verifica_token, (req, res) => {
+
+    if (req.usuario.role != 'ADMIN_ROLE') {
+        return res.status(401).json({
+            ok: false,
+            mensaje: 'No tienes permisos de borrar datos'
+        })
+    }
 
     let id = req.params.id;
 

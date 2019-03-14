@@ -15,8 +15,13 @@ app.use(bodyParser.urlencoded({ extended: false }));
 // parse application/json
 app.use(bodyParser.json());
 
-app.use(require('../cruds/cruds')); // con esta linea indico que voy a usar las
+
+/**
+ * configuracion de las rutas para crud
+ */
+app.use(require('../cruds/index')); // con esta linea indico que voy a usar las
 // peticiones que cruds/cruds
+
 
 mongoose.connect(process.env.URLDB, { useNewUrlParser: true, useCreateIndex: true },
     (err, res) => {
