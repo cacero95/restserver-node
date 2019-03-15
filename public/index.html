@@ -9,7 +9,8 @@
 
     <script src="https://apis.google.com/js/platform.js" async defer></script>
     <meta name="google-signin-client_id" content="660910679754-7tgt311r4fd02nmubaj439bmo8ou36jl.apps.googleusercontent.com">
-
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
 
 </head>
 
@@ -17,8 +18,29 @@
 
     <div class="g-signin2" data-onsuccess="onSignIn"></div>
     <a href="#" onclick="signOut();">Sign out</a>
-
+    <button onclick="twitter();">Twitter</button>
     <script>
+        function twitter() {
+            console.log('funciona');
+
+            const settings = {
+                "async": true,
+                "crossDomain": true,
+                "url": "https://api.twitter.com/1.1/search/tweets.json?q=tenis",
+                "method": "GET",
+                "headers": {
+                    "Authorization": "OAuth oauth_consumer_key=\"hArIyoVy0lP8nOf2kV8xKeZ6I\",oauth_token=\"2355469728-mHnWjplpYnrLf2SxB5hnuAPQ8ezU6gIdV3nVcpi\",oauth_signature_method=\"HMAC-SHA1\",oauth_timestamp=\"1552522819\",oauth_nonce=\"JHo3Nb8rQet\",oauth_version=\"1.0\",oauth_signature=\"RudqJqY0XVDyfCajnT4SgFUQtTY%3D\"",
+                    "cache-control": "no-cache",
+                    "Postman-Token": "91308671-ed98-4745-9ce2-4f1ceca13f66"
+                }
+            }
+
+            $.ajax(settings).done(function(response) {
+                console.log(response);
+            });
+        }
+
+
         function onSignIn(googleUser) {
             var profile = googleUser.getBasicProfile();
             console.log('ID: ' + profile.getId()); // Do not send to your backend! Use an ID token instead.
