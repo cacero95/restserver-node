@@ -1,6 +1,18 @@
 const express = require('express');
+
 const bcrypt = require('bcrypt'); // se encarga de encriptar data
 const app = express();
+
+/**
+ * twitter integration
+ */
+
+const Twitter = require('twitter');
+
+
+
+// Note: The token is optional for some requests
+
 
 const _ = require('underscore');
 /**
@@ -13,6 +25,62 @@ const { verifica_token } = require('../middlewares/autenticacion');
 //               [verificar_token, 'nombre_segundo middle',etc.]
 //                              ^
 //                              |
+
+// prueba de twitter
+
+/**
+ * twitter credentials 
+ */
+
+const client = new Twitter({
+    consumer_key: process.env.twitter_key,
+    consumer_secret: process.env.twitter_secret,
+    access_token_key: process.env.twitter_token_key,
+    access_token_secret: process.env.twitter_token_secret
+});
+
+const params = { screen_name: 'nodejs' };
+app.get('/twitter', (req, res) => {
+
+    client.get('https://api.twitter.com/1.1/search/tweets.json?q=basket_best_players', params, (error, tweets, response) => {
+        if (error) {
+            return res.status(400).json({
+                ok: false,
+                mensaje: err
+            });
+        }
+        res.json({
+            cuerpo: tweets
+        })
+    });
+
+});
+//
+//request({
+//
+//    url: request_data.url,
+//    method: request_data.method,
+//    form: oauth.authorize(request_data, token),
+//    headers: oauth.toHeader(oauth.authorize(request_data, token))
+//
+//}, function(error, response, body) {
+//
+//    if (error) {
+//        return res.status(400).json({
+//            ok: false,
+//            mensaje: err
+//        });
+//    }
+//    response.json({
+//        ok: true,
+//        mesage: body
+//    })
+//
+//
+//});
+//
+
+
 app.get('/usuario', verifica_token, (req, res) => {
     /**
      * app.get(ruta, middleware, callback)

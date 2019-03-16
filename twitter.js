@@ -21,9 +21,7 @@ const oauth = OAuth({
         return crypto.createHmac('sha1', key).update(base_string).digest('base64');
     }
 });
-app.get('https://api.twitter.com/1.1/search/tweets.json?q=basket', (res, req) => {
 
-})
 const request_data = {
     url: 'https://api.twitter.com/1.1/search/tweets.json?q=basket',
     method: 'GET'
